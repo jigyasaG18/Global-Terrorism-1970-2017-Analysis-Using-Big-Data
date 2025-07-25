@@ -1,0 +1,54 @@
+DAX Measures in Power BI 
+
+Total Attacks = COUNTROWS(Sheet1) 
+
+Successful Attacks =  
+CALCULATE(COUNTROWS(Sheet1), Sheet1[Success Rate] = 1) 
+
+Success Rate % =  
+DIVIDE([Successful Attacks], COUNTROWS(Sheet1), 0) * 100 
+
+Civilian Targets =  
+CALCULATE( 
+COUNTROWS(Sheet1), 
+Sheet1[Target Type] = "Private Citizens & Property" 
+) 
+
+Countries with Civilian Attacks =  
+CALCULATE( 
+DISTINCTCOUNT(Sheet1[Country]), 
+Sheet1[Target Type] = "Private Citizens & Property" 
+) 
+
+Most Affected Region =  
+VAR TopRegion = 
+TOPN( 
+1, 
+SUMMARIZE( 
+Sheet1, 
+Sheet1[Region], 
+"AttackCount", COUNTROWS(Sheet1) 
+), 
+[AttackCount], 
+DESC 
+) 
+RETURN 
+MAXX(TopRegion, Sheet1[Region])
+
+Most Used Lethal Weapon =  
+CALCULATE( 
+MAXX( 
+TOPN(1, SUMMARIZE(Sheet1, Sheet1[Weapon Type], "WeaponCount", 
+COUNTROWS(Sheet1)), [WeaponCount]), 
+Sheet1[Weapon Type] 
+) 
+) 
+
+Most Used Weapon Type =  
+CALCULATE( 
+MAXX( 
+TOPN(1, SUMMARIZE(Sheet1, Sheet1[Weapon Type], "WeaponCount", 
+COUNTROWS(Sheet1)), [WeaponCount]), 
+Sheet1[Weapon Type] 
+) 
+)
